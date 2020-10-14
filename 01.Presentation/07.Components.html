@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Les Composants</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://kit.fontawesome.com/22dce008cd.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div id="app">
+
+    <!-- Affichage simple d'une variable dans un composant -->
+    <first-component v-bind:item="message"></first-component>
+
+    <!-- Le composant se réfère au premier élément de son template, appelé "root".
+    Si on fait un v-for, v-if, ou même qu'on ajoute une classe ici, dans le nom du compsant, il s'ajoutera automatiquement
+    à l'élément root ( ici, le <p> ).
+    Il ne peut y avoir qu'on seul élément root, qui contient le reste du template
+    -->
+    <first-component v-for="item of liste" v-bind:item="item" class="text-primary"></first-component>
+
+
+    <!-- On peut envoyer directement une liste au composant. Ici, un composant qui prend une liste de string
+    L'itération se fait dans le template du composant, et non ici.
+    -->
+
+    <!-- On peut également envoyer plusieurs propriétés, puisque props est un tableau.
+    Ici, on envoie une propriété classe, qui ne sera pas affichée mais de nouveau binder avec v-bind:class.
+    Classe est une propriété computed, mais ça marche évidemment de la même façon !
+    -->
+    <liste-component v-bind:list="liste" v-bind:classe="classe"></liste-component>
+
+
+    <!-- On peut envoyer du texte directement dans le composant grâce aux slot
+    ça permet d'avoir un composant facilement utilisable, comme une balise personnalisée, déjà stylisée
+    -->
+    <!-- Ici, je n'envoie pas de donnée via v-bind, mais il est possible de cumuler -->
+    <slot-component>Vous faites n'importe quoi ! </slot-component>
+
+
+    <!-- On peut également envoyer un objet en paramétre dans ce cas, il faut faire attention, en cas de réutilisation du composant,
+    à bien envoyer un objet similaire à ce qui est décrit (ici, on attend un attribut name, et un attribut price
+    -->
+
+    <!-- On peut utiliser les méthodes dans les composants, et en créer, mais pour cela, il faut utiliser les event emitter-->
+    <list-products  v-bind:products="products" v-on:to-order="order"></list-products>
+
+</div>
+
+
+<script>
+
+    // Créer un composant :
+    Vue.component('first-component', {
+        // Pour du multiligne, utiliser les quotes inversées
+        template: '<p>{{item}}</p>',
+        props: ['item']
+    });
+
+    // Un composant pour liste de string :
+    Vue.component('liste-component', {
+        // On peut afficher une liste, mais pas mettre le for dans l'élément 'root' : il faut le mettre dans un élément enfant :
+        template: `
+        <div>
+            <p class="alert" v-bind:class="classe" v-for="item of list">{{item}} {{classe}}</p>
+        </div>
+        `,
+        props: ['list', 'classe'],
+    });
+
+    Vue.component('slot-component', {
+        template: '<p class="alert alert-danger"><span class="font-weight-bolder">ERROR !</span> <slot></slot></p>'
+    })
+
+    Vue.component('list-products', {
+        template: `
+            <div class="row">
+                 <p
+                     v-for="prod of products"
+                     class="alert alert-info col-3"
+                     v-on:click="orderProduct(prod)">
+                   {{prod.name}}  <span class="float-right">{{prod.price}}€</span>
+                 </p>
+            </div>
+            `,
+        props: ['products'],
+        methods: {
+            orderProduct: function (product) {
+                this.$emit('to-order', product)
+            }
+        }
+    });
+
+    const vm = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello World !',
+            liste: ['pomme', 'grenade', 'mangue', 'framboises'],
+            products: [
+                {id: 1, name: 'Ordinateur', price: 1800},
+                {id: 2, name: 'Souris sans fil', price: 23},
+                {id: 3, name: 'Clavier mecanique', price: 35},
+                {id: 4, name: 'Ecran incurvé', price: 130},
+            ]
+        },
+        methods: {
+            order: (product) => console.log(product.name + ' commandé(e) !'),
+        },
+        computed: {
+            classe: function () {
+               return (this.liste.length < 5 ) ? 'alert-success' : 'alert-warning';
+            }
+        }
+    })
+</script>
+
+</body>
+</html>

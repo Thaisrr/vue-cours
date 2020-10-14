@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ma Bibliothèque</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://kit.fontawesome.com/22dce008cd.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div id="app" class="w-50 mx-auto">
+    <h1>Ma Bibliothèque</h1>
+
+    <!-- Exercice 1:
+     - Créer une liste de livres contenant : un nom, un.e auteur.rice, un statut
+     - Afficher les listes de ces livres dans un tableau
+     -->
+
+    <!-- Exercice 2:
+        - Modifier la couleur du texte de statut en fonction de sa valeur :
+    -->
+
+    <table class="table table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th>Nom</th>
+            <th>Auteur.rice</th>
+            <th>Statut</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="book of books">
+            <td>{{book.name}}</td>
+            <td>{{book.author}}</td>
+            <td>
+              <!--  <button :class="'btn-outline-'+classColor(book)" class="btn dropdown-toggle">{{book.isRead}}</button>
+                <div class="btn">
+                    <button class="btn btn-outline-success">Lu</button>
+                    <button class="btn btn-outline-info">En cours</button>
+                    <button class="btn btn-outline-">Lu</button>
+                </div> -->
+                <div class="dropdown">
+                    <button :class="" class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{book.isRead}}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <button class="dropdwon-item text-success ">Lu</button>
+                            <button class="dropdown text-info">En cours</button>
+                            <button class="btn btn-outline-primary">A lire</button>
+                            <button class="btn btn-outline-secondary">Abandonné</button>
+                    </div>
+                </div>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+    <div class="dropdown">
+        <button :class="" class="btn dropdown-toggle" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{book.isRead}}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+            <button class="dropdwon-item text-success ">Lu</button>
+            <button class="dropdown text-info">En cours</button>
+            <button class="btn btn-outline-primary">A lire</button>
+            <button class="btn btn-outline-secondary">Abandonné</button>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Dropdown
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+            <button class="dropdown-item" type="button">Action</button>
+            <button class="dropdown-item" type="button">Another action</button>
+            <button class="dropdown-item" type="button">Something else here</button>
+        </div>
+    </div>
+
+
+
+
+</div>
+<script>
+
+    /* Voir si ils connaissent le principe d'Enumeration, sinon, comment ça fonctionne :
+    Ici, pour les livres, on veut savoir si ils sont lus ou non : on pourrait utiliser un booléan : true / false
+    Mais si on veut ajouter une option, "en cours de lecture", ou Abdandonné ,on est bloqué par la dualité du booléan ( ni true, ni false, c'est un entre deux ).
+    On pourrait utilser une chaîne de caratère : isRead: "Reading". ça fonctionnerait, mais il faudrait contrôller qu'il n'y ait pas de faute dans la chaine de caractère.
+    On risquerait de se retrouver avec isRead: "lu", isRead: "ok", isRead: "Lue"... ( c'est souvent ce qui pose problème dans les mauvaises bases de données.
+    Pour pouvoir exploiter les données, il est nécéssaire d'avoir un controlle sur celle ci. Si je veux trier mes livres en fonction de leur statut de lecture,
+    il faut que je puisse retrouver isRead, et appeler les livres where isRead ="READ", sans louper de livre à cause d'une mauvaise orthogrphe.
+
+    On peut donc utiliser des Enumérations, ou ENUM. En JS, le principe d'Enum n'existe pas vraiment, il existe en Typescript sous cette forme :
+    enum MonEnum { CHOIX, CHOIX_2, CHOIX_3 }...
+    En JS, on va créer un équivalent, via une constante et un objet JS.
+
+     */
+    const reading_status = {
+        READ : 'Lu',
+        READING : 'En lecture',
+        TO_READ: 'A lire',
+        ABANDONED : 'Abandonné'
+    }
+    const books = [
+        {name: "L'Assassin Royal", author:"Robin Hobb", isRead: reading_status.READ},
+        {name: "Les Culottés", author:"Pénélope Bagieu", isRead: reading_status.READING},
+        {name: "Nana", author:"Emile Zola", isRead: reading_status.TO_READ},
+        {name: "Les Hauts de Hurlevent", author:"Emily Bronte", isRead: reading_status.TO_READ},
+        {name: "Game of Throne", author:"George Martin", isRead: reading_status.ABANDONED},
+    ]
+
+    const app = new Vue({
+        el: '#app',
+        data: {
+            books,
+
+        },
+        methods: {
+            classColor: function (book) {
+                switch (book.isRead) {
+                    case "A lire":
+                        return "primary";
+                    case "Abandonné":
+                        return "secondary";
+                    case "En lecture":
+                        return "info";
+                    case "Lu":
+                        return "success"
+                }
+            }
+        }
+    })
+</script>
+
+</body>
+</html>

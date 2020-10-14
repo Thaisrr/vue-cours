@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Instance et cycle de vie de VueJS</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://kit.fontawesome.com/22dce008cd.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div id="app">
+
+<!---- 1 : les propriétés de VueJS --------------------------->
+
+    <!-- Ici, ma variable existe dans l'instance de vue, elle est déclarée, donc je peux la modifier ( montrer modif dans la console ) -->
+    <p>{{a}}</p>
+    <!-- Ici : b n'existe pas encore dans Vue, donc un warning va s'afficher
+    Même si je créé après coup ma variable b ( vm.b = 'Machin' dans la console ), la variable va exister mais ne sera pas réactive, et donc ne s'affichera pas.)
+    => Seul les variables créées avant l'initialisation seront rendue / affichée et réactives
+    -->
+    <p>{{b}}</p>
+    <!-- Ici, je peux retrouver la valeur de b, mais elle n'est pas définie dans l'instance, uniquement dans le rendu. Donc la variable ne sera pas réactive
+    non plus ( tests dans la console -->
+    <p>{{c = 'Bidule'}}</p>
+
+    <!-- CF Documentation :
+    https://vuejs.org/v2/guide/instance.html
+    -->
+
+    <!--
+    On voit que pour appeler une propriété qu'on a nous même définie, il suffit de faire vm ( ou le nom donné à notre instance
+    point . + le nom de la propriété.
+    Mais Vue.JS vient avec ses propres propriétés prédéfinie, comme Data. Elles sont préfixées par un $, pour les différenciées de celles
+    de l'utilisateur :
+    ( ajouter une propriété data: '' dans l'instance de vue )
+    vm.data => propriété de l'utilisateur
+    vm.$data => propriété native
+    -->
+
+
+<!------ 2. Cycle de vie de l'instance ------------------->
+
+    <!--
+    beforeCreated
+    created -> Les variables existent, on passe à la vue
+
+    beforeMount
+    mounted -> Le dom virtuel est créé, et s'affiche alors une copie de el => $el
+
+    beforeUpdate
+    update -> itération pendant le rendu à chaque modification
+
+    beforeDestroy
+    destroyed => Le DOM virtuel est détruit, donc on voit le dom normal, qui n'est plus dynamique.
+
+    -->
+
+    <p>{{seconds}}</p>
+
+    <!-- Montrer les différentes étapes avec les consoles log, et montrer que les intervales continuent après le destroy
+    Ensuite, montrer qu'il faut bien faire un clearInterval, pour arrêter les éléments en cours d'exécution.
+     Si on lance un truc dans le mounted, il faut le supprimer dans le destroy
+     -->
+
+
+
+
+</div>
+
+
+
+<script>
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            a: 'Hello',
+            data: 'Ma data',
+            seconds: 0
+        },
+        /*
+        Montrer le schémas d'instance de VueJS
+         */
+        beforeCreate: function () {
+            console.log('before Create - A = ' + this.a); // undefined
+        },
+        created: function () {
+            console.log('Created - A = ' + this.a); // Hello
+        },
+       mounted: function () {
+            // Ne pas mettre le this.$interval dès le début
+           // Ici l'interval va continuer, même après le $destroy()
+           // On va devoir supprimer l'interval dans le destroyed. On créé donc une variable qui se réfère à l'interval, pour pouvoir le récupérer ailleur
+           // Le $ sert juste à indiquer visuellement qu'il s'agit d'une variable qui sert juste la logique du code
+            this.$interval = setInterval( () =>  {
+                this.seconds++;
+                console.log('Timer ' + this.seconds);
+            }, 1000)
+        },
+        beforeDestroy: function () {
+           console.log('Destroying !')
+        },
+        destroyed: function () {
+            console.log('Instance destroyed !');
+            console.log(this.a); // Les variables existent encore
+
+            // A faire en deuxième partie :
+            clearInterval(this.$interval);
+        }
+
+    })
+</script>
+
+</body>
+</html>

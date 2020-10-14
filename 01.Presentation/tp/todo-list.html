@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://kit.fontawesome.com/22dce008cd.js" crossorigin="anonymous"></script>
+
+</head>
+<body>
+<h1 class="m-5">Ma Todo liste</h1>
+
+
+
+    <main id="app" class="mt-3 p-5">
+
+        <div class="form-inline">
+            <div class="form-group ">
+                <label for="todo" class="mr-3">Nouvelle tâche</label>
+                <input id="todo" class="form-control" v-model="new_task" >
+            </div>
+            <button class="input-group-append btn btn-outline-primary " v-on:click="addTask()">Ajouter</button>
+        </div>
+
+
+        <div class="row">
+            <div class="col-6 mt-3">
+
+                <div v-if="l_todo.length > 0" class="mt-2">
+                    <h2>Missions :</h2>
+                    <div class="row" v-for="task of l_todo">
+                        <i class="fas fa-minus col-1"></i>
+                        <p class="col-3">{{task}}</p>
+                        <i class="fas fa-check text-success col-1" title="Mission accomplie !" v-on:click="addToDone(task)"></i>
+                        <i class="fas fa-trash text-warning col-1" title="supprimer" v-on:click="deleteTask(task)"></i>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+
+            <div v-if="l_done.length > 0" class="col-6 pl-5 border-left border-primary">
+                <h2>Missions accomplies : </h2>
+                <div class="row" v-for="task of l_done">
+                    <i class="fas fa-check col-1 text-success"></i>
+                    <p>{{task}}</p>
+                </div>
+                <button class="btn btn-outline-success" v-on:click="deleteDone()">Vider la liste</button>
+            </div>
+        </div>
+
+    </main>
+
+<script>
+    const app = new Vue({
+        el: '#app',
+        data: {
+            l_todo: [],
+            l_done: [],
+            new_task: null
+        },
+        methods: {
+            addTask: function () {
+                this.l_todo.push(this.new_task);
+                this.new_task = null;
+            },
+            deleteDone: function () {
+                this.l_done = [];
+            },
+            deleteTask: function (task) {
+                this.l_todo.splice(this.l_todo.find(item => item = task), 1);
+            },
+            addToDone: function (task) {
+                this.l_todo.splice(this.l_todo.find(item => item = task), 1);
+                this.l_done.push(task);
+            }
+        }
+    })
+</script>
+
+</body>
+</html>

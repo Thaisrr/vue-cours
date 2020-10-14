@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customisation</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://kit.fontawesome.com/22dce008cd.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div id="app">
+
+    <!-- Les filtres ---->
+
+    <h1>Hello {{name | titlelize }} !</h1>
+
+    <h2> {{ 'test' | titlelize}}</h2>
+
+    <div class="form-group w-25">
+        <label>Write your name</label>
+        <input class="form-control" v-model="name">
+    </div>
+</div>
+
+
+<script>
+    Vue.filter('titlelize', function (value) {
+        if(value !=='')
+        // Return la première lettre de value en maj + une portion de value commençant à la deuxième lettre
+            return value.charAt(0).toUpperCase() + value.substr(1).toLowerCase();
+        else
+            return 'World'
+    });
+
+    const vm = new Vue({
+        el: '#app',
+        data: {
+            name: '',
+        }
+    })
+</script>
+</body>
+</html>

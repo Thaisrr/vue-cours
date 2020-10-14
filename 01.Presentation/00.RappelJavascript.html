@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!-- 1 : montré comment afficher des données en JS natif -->
+<p id="msg"></p>
+<!-- voir si l'affichage est dynamique -->
+<button onclick="changeName()">Moi c'est pas Germaine !</button>
+
+
+<script>
+    // 1 : Révisions
+
+    // Exemple en JS :
+    const p = document.querySelector('#msg');
+    let name = 'Germaine'
+    p.textContent = 'Hello ' + name;
+
+    changeName = function () {
+        name = 'Michel';
+        showName();
+    }
+
+    showName = function () {
+        console.log(name);
+    }
+
+    // Rappeler ce qu'est un objet Javascript :
+    // Etape 1 : les différentes propriétés : string, boolean, number
+    // Etape 2 : les listes
+    // Etape 3 : les objets
+    // Etape 4 les listes d'objets
+    // Etape 3 : les méthodes ( une fonction dans un objet est appelée une méthode
+    let monObjJS = {
+        name: 'Charles Xavier',
+        mail: 'jcxavier@xmen.com',
+        isTeacher: true,
+        age: 138,
+        hobbies: ['Lire dans les pensées', 'Faire un discours motivant', 'Etre trahi par Magneto'],
+        l_articles : {
+            title: 'Pourquoi la franchise Xmen s\'essouffle-t-elle ?',
+            text: 'lorem ipsum blabla',
+            creation_date: new Date( 1989, 8, 22) // /!\ 8 = septembre, les mois commences à 0
+        },
+        // Trois façons d'écrire des fonctions :
+        // La basique
+        listHobbies() {
+            console.log(this)
+            this.hobbies.forEach(hobby => console.log(hobby))
+        },
+        // ES 6 : fonction fléchée : attention, on ne peut pas appeler d'instance de la classe, this se rapporte à la page
+        sayHi: () => console.log(this),
+        // Fonction anonyme ( qu'on utilisera dans le cours )
+        destroyTheWorld : function () {
+            console.log(this.name + ' is destroying the world !')
+        }
+    }
+    console.log(monObjJS.name);
+
+    monObjJS.listHobbies();
+    monObjJS.sayHi();
+    monObjJS.destroyTheWorld();
+
+</script>
+
+</body>
+</html>

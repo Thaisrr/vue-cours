@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Watchers</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://kit.fontawesome.com/22dce008cd.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <div id="app" class="w-75 mx-auto mt-5">
+
+        <!-- 1 : Montrer que lorsqu'on utilise le data binding, il y a une surveillance à chaque changement :
+        Le console log s'effectue à chaque fois qu'on tape dans l'input
+        -->
+
+        <div class="form-group w-25">
+            <label>!true === false ?</label>
+            <input class="form-control" v-model="answer">
+        </div>
+
+        <p :class="checkAnswer()">Répondez correctement pour afficher en vert </p>
+
+        <!-- Si on met un autre input avec model, chaque modification va déclancher la fonction également -->
+
+        <div class="form-group w-25">
+            <label>Quel est votre nom ?</label>
+            <input class="form-control" v-model="name">
+        </div>
+
+        <!-- Cette situation peut poser problème en cas de code plus long -->
+
+        <!-- Pour pallier ça, on va pouvoir redéfinir notre fonction non pas dans les méthodes, mais dans la propriété Computed : -->
+
+        <div class="form-group w-25">
+            <label>De quel couleur est le cheval blanc d'Henri IV ?</label>
+            <input class="form-control" v-model="color">
+        </div>
+
+        <p :class="checkColor">Répondez correctement pour afficher en vert </p>
+
+
+        <p> Un autre exemple : </p>
+        <!-- Il est possible de mettre des expessions dans les templates : {{ 1 + 1 }}, mais il est conseillé de rester sur des expressions simples -->
+        <!-- Ici, il y a une difficulté de lecture, on ne comprend pas directement qu'on affiche le message à l'envers -->
+
+        <p>{{message.split('').reverse().join('')}}</p>
+
+        <!-- On pourrait essayer de faire une variable dans Data, mais ça ne fonctionnerait pas : message n'est pas encore instancié et donc undefined -->
+        <!--
+        <p>{{reversedMessageData}}</p>
+        -->
+
+        <!-- Il vaut donc mieux passer par une fonction, qui retourne le résultat.
+        Il ne s'agit pas ici de modifier quoi que ce soit, mais d'obtenir une valeur, c'est ce qu'on appelle un getter
+        Ce getter va surveiller ce à quoi il est assigné, sans faire de zelle comme dans les méthodes -->
+
+        <p>{{reversedMessage}}</p>
+
+        <!-- Si le nom de notre variable est logique, on comprend alors tout de suite ce qu'on affiche -->
+
+        <!-- Ici, la fonction n'est appelée que lorsque la valeur surveillée - color - est modifiée -->
+
+        <!-- les propriétés Computed sont des getters -->
+
+        <!-- On peut définir des setter à ces propriété, càd qu'on peut modifier les valeurs associées :  -->
+
+        <p>Prénom : {{firstName}}</p>
+        <p>Nom : {{lastName}}</p>
+        <p>{{fullName}}</p>
+
+        <div class="form-group">
+            <label>Votre nom : </label>
+            <input v-model="fullName">
+        </div>
+
+        <!-- Enfin, les watchers permettent de détecter lorsqu'une valeure est modifiée :
+         C'est une valeur préalablement instanciée dans data, qu'on va surveiller
+         -->
+       <div class="form-group">
+           <label>Best book ever ?</label>
+           <input v-model="book">
+
+       </div>
+
+    </div>
+
+
+
+<script>
+
+    new Vue({
+        el: '#app',
+        data: {
+            answer: '',
+            name: '',
+            color : '',
+            message: 'Les chaussettes de l\'archi duchesse sont-elles sèches et archi sèches ?',
+            //reversedMessageData: this.message.split('').reverse().join('')
+            // On ne peut pas faire ça, car on appelle message alors qu'elle n'est pas encore instanciée et donc undefined
+            firstName: 'Germaine',
+            lastName: 'Tourte',
+            book: ''
+        },
+        methods : {
+            checkAnswer: function () {
+                console.log('in check answer - Method');
+                return (this.answer === 'true') ? 'text-success' : 'text-danger';
+            }
+        },
+        computed: {
+            checkColor: function () {
+                console.log('In check color - Computed');
+                return (this.color === 'blanc') ? 'text-success' : 'text-danger';
+            },
+            reversedMessage: function () {
+                return this.message.split('').reverse().join('');
+            },
+            /*fullName: function () {
+                return this.firstName + ' ' + this.lastName
+            },*/
+            fullName: {
+                get :  function () {
+                    return this.firstName + ' ' + this.lastName
+                },
+                set: function (value) {
+                    const array = value.split(' ');
+                    this.firstName = array[0];
+                    this.lastName = array[1];
+                }
+            }
+        },
+        watch: { // Attention, il faut d'abord instancier book dans data, puisqu'il s'agit d'une valeur à surveiller
+            book: function (value) {
+                console.log(`The best book ever is now : ${value}`);
+            }
+        }
+    })
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Introduction</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://kit.fontawesome.com/22dce008cd.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <div id="app">
+
+        <!-- Préparation :
+        Ajouter VueJS
+        Créer un élément avec id dans lequel s'exécute Vue
+        Instancier VueJS avec une première variable message
+        -->
+
+
+<!-- Affichage de donnée dynamique ou Interpolation : -->
+
+        <!-- On peut afficher la valeur d'une variable -->
+        <p>Mon message: {{ message }}</p>
+
+        <p>{{ message }}</p>
+        <button class="btn btn-primary" v-on:click="changeMessage()">Traduire le message</button>
+
+        <!-- On peut évidemment appeler directement un méthode, pour afficher sa valeur de retour;
+        Par défaut, si il n'y a pas de "return", elle renvoie "undefined" -->
+        <p>{{sayHello()}}</p>
+
+        <p>1 + 1 = {{ 1 + 1 }}</p>
+        <p>Commentaire posté le {{ date }}</p>
+
+        <!-- L'interpolation ne concerne que le texte, du raw text ou string / chaîne de caractère -->
+        <p>Interpolation: {{rawHtml}}</p> <!-- affiche du texte brut -->
+
+        <!-- pour interpréter du html : mais attention aux faillex XSS ! -->
+        <!-- On voit que si on met du texte dans la balise span, il est remplacé par la valeur de rawHtml -->
+        <p>v-html: <span v-html="rawHtml">Test</span></p>
+
+    </div>
+
+
+    <script>
+
+        /*
+        First Hello World en VueJS
+         */
+        const app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello World !',
+                rawHtml: '<a href="#">Lien vers Dawan</a>',
+                date: new Date().toLocaleString()
+            },
+            methods: {
+                changeMessage: function () {
+                    this.message = 'Bonjour le monde !'
+                },
+                sayHello: function () {
+                    return 'Hello there !'
+                }
+            }
+        });
+
+        console.log(app);
+
+    </script>
+
+
+
+</body>
+</html>

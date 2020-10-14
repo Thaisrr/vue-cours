@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>First Vue.JS Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://kit.fontawesome.com/22dce008cd.js" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <div id="app">
+       <div class="container mt-5">
+
+               <div class="form-group">
+                   <label for="name">Login</label>
+                   <input class="form-control" id="name" v-model="user">
+               </div>
+
+               <div>
+                   <h1>Hello {{user}}</h1>
+                   <ul>
+                       <li v-for="product of products">
+                           {{product}}
+                       </li>
+                   </ul>
+
+                   <h3>To do : </h3>
+                   <div class="form-inline">
+                       <div class="form-group row">
+                           <label for="todo" class="col-4">A faire</label>
+                           <input id="todo" class="col-7" v-model="task" >
+                       </div>
+                       <button class="btn btn-outline-primary" v-on:click="addTask()">Ajouter</button>
+                   </div>
+                   <p>{{task}}</p>
+
+                   <div v-if="todos.length > 0">
+                       <h2>Todo : </h2>
+                       <ul>
+                           <li v-for="todo of todos">{{todo}}
+                               <span v-on:click="deleteTask(todo)">
+                               <i class="fas fa-trash"></i>
+                           </span>
+                           </li>
+                       </ul>
+                   </div>
+
+                   <input class="form-control" v-model="success" type="checkbox">
+                   <p v-bind:class="{primary: success, warning: !success}" v-bind:style="func_style()">Hello Universe !</p>
+
+                   <liste-test v-for="p of products" v-bind:nom="p" v-on:to-order="order"></liste-test>
+
+
+               </div>
+       </div>
+    </div>
+
+
+    <script>
+
+        // Créer un composant :
+        Vue.component('liste-test', {
+            template: '<p class="jumbotron" v-on:click="orderProduct(nom)">{{nom}}</p>', // Pour du multiligne, utiliser les quotes inversées
+            props: ['nom'],
+            methods: {
+                orderProduct: function (product) {
+                    this.$emit('to-order', product)
+                }
+            }
+        })
+
+        // App : une nouvelle instance de Vue, qui prend en argument un objet Javacript
+         let app = new Vue({
+             el: "#app",
+             data: {
+                 user: null,
+                 products: ['Pizza', 'Cheeseburger', 'Maki'],
+                 todos: [],
+                 task: '',
+                 success: true,
+                 count: 0
+             },
+             methods: {
+                 addTask: function () {
+                    this.todos.push(this.task);
+                    this.task = null;
+                 },
+                 deleteTask: function (t) {
+                     let index = this.todos.findIndex(task => task = t);
+                     this.todos.splice(index, 1);
+                 },
+                 order: (product) => console.log(product + ' commandé(e) !'),
+                 func_style: function () {
+                     if(this.success)
+                         return {background: '#00ff00'}
+                     else
+                         return {background: '#ff0000'}
+                 },
+
+             }
+         })
+    </script>
+
+</body>
+</html>
